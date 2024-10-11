@@ -1,56 +1,49 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+"use client";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import Head from 'next/head';
+import GameButton from '@/components/GameButton';
+import { FaUser, FaUsers, FaRegSquare } from 'react-icons/fa';
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </div>
+    <div style={styles.container}>
+      <Head>
+        <title>TUSMIX</title>
+        <meta name="description" content="TUSMIX" />
+      </Head>
+      <h1 style={styles.title}>
+        Bienvenue sur <span style={{ color: '#ff595e' }}>TUSMIX</span>
+      </h1>
+      <div style={styles.buttonContainer}>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Mot du jour</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Suite du jour</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUser}>Solo</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUsers}>Multijoueur</GameButton>
       </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
-    </section>
+    </div>
   );
-}
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'top',
+    height: '100vh',
+    fontFamily: '"Poppins", sans-serif',
+  } as React.CSSProperties,
+  title: {
+    fontSize: '6rem',
+    fontWeight: '700',
+    color: '#1982c4',
+    marginBottom: '20px',
+    marginTop: '10rem',
+  } as React.CSSProperties,
+  buttonContainer: {
+    display: 'grid',
+    gap: '1rem',
+  } as React.CSSProperties,
+};
+
+export default Home;
