@@ -9,6 +9,10 @@ export const siteConfig = {
       href: "/",
     },
     {
+      label: "Multiplayer",
+      href: "/multiplayer",
+    },
+    {
       label: "About",
       href: "/about",
     },

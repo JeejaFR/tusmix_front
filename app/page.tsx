@@ -4,6 +4,7 @@ import Head from 'next/head';
 import GameButton from '@/components/GameButton';
 import { FaUser, FaUsers, FaRegSquare } from 'react-icons/fa';
 import '../styles/animations.css'; // Assure-toi que le chemin est correct
+import Link from 'next/link';
 
 const Home: React.FC = () => {
   return (
@@ -14,10 +15,18 @@ const Home: React.FC = () => {
       </Head>
       <AnimatedTitle text="TUSMIX" />
       <div style={styles.buttonContainer}>
-        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Mot du jour</GameButton>
-        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Suite du jour</GameButton>
-        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUser}>Solo</GameButton>
-        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUsers}>Multijoueur</GameButton>
+        <Link href="/">
+         <GameButton onClick={() => {}} icon={FaRegSquare}>Mot du jour</GameButton>
+        </Link>
+        <Link href="/">
+         <GameButton onClick={() => {}} icon={FaRegSquare}>Suite du jour</GameButton>
+        </Link>
+        <Link href="/">
+         <GameButton onClick={() => {}} icon={FaUser}>Solo</GameButton>
+        </Link>
+        <Link href="/multiplayer">
+         <GameButton onClick={() => {}} icon={FaUsers}>Multijoueur</GameButton>
+        </Link>
       </div>
     </div>
   );
