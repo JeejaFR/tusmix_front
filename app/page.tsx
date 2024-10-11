@@ -24,7 +24,7 @@ const Home: React.FC = () => {
         <Link href="/">
          <GameButton onClick={() => {}} icon={FaUser}>Solo</GameButton>
         </Link>
-        <Link href="/multiplayer">
+        <Link href="/lobby">
          <GameButton onClick={() => {}} icon={FaUsers}>Multijoueur</GameButton>
         </Link>
       </div>
