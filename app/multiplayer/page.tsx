@@ -64,6 +64,23 @@ const Multijoueur: React.FC = () => {
     });
   };
 
+  const colors = ['#ff595e', '#ffca3a', '#1982c4'];
+
+  const AnimatedTitle: React.FC<{ text: string }> = ({ text }) => {
+    return (
+      <h1 className={styles.title}>
+        {text.split('').map((letter, index) => (
+          <span 
+            key={index} 
+            style={{ color: colors[index % colors.length]}}
+          >
+            {letter}
+          </span>
+        ))}
+      </h1>
+    );
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -75,7 +92,7 @@ const Multijoueur: React.FC = () => {
         <Link href="/">
           <IconButton icon={FaHome} onClick={() => {}} />
         </Link>
-        <h1 className={styles.title}>TUSMIX</h1>
+        <AnimatedTitle text="TUSMIX" />
       </div>
       {!isSelectingMode ? (
         <PlayersList players={players} />
