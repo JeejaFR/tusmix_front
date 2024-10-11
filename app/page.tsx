@@ -1,56 +1,77 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+"use client";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import Head from 'next/head';
+import GameButton from '@/components/GameButton';
+import { FaUser, FaUsers, FaRegSquare } from 'react-icons/fa';
+import '../styles/animations.css'; // Assure-toi que le chemin est correct
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </div>
+    <div style={styles.container}>
+      <Head>
+        <title>TUSMIX</title>
+        <meta name="description" content="TUSMIX" />
+      </Head>
+      <AnimatedTitle text="TUSMIX" />
+      <div style={styles.buttonContainer}>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Mot du jour</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaRegSquare}>Suite du jour</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUser}>Solo</GameButton>
+        <GameButton onClick={() => alert('Bienvenue sur TUSMIX !')} icon={FaUsers}>Multijoueur</GameButton>
       </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
-    </section>
+    </div>
   );
-}
+};
+
+const AnimatedTitle: React.FC<{ text: string }> = ({ text }) => {
+  return (
+    <h1 style={styles.title}>
+      {text.split('').map((letter, index) => (
+        <span 
+          key={index} 
+          className="letter" 
+          style={{ color: colors[index % colors.length], animationDelay: `${Math.random() * 2}s` }}
+        >
+          {letter}
+        </span>
+      ))}
+    </h1>
+  );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'top',
+    height: '100vh',
+    background: 'linear-gradient(135deg, #0d1b2a, #1b263b, #415a77)',
+    backgroundSize: '400% 400%',
+    animation: 'gradient 15s ease infinite',
+    fontFamily: '"Poppins", sans-serif',
+  } as React.CSSProperties,  
+  title: {
+    fontSize: '6rem',
+    fontWeight: '700',
+    marginBottom: '20px',
+    marginTop: '5rem',
+    display: 'flex',
+    color: '#ffffff', // Couleur de base blanche pour le texte
+    textShadow: `
+      0px 0px 4px rgba(0, 150, 255, 0.6), 
+      0px 0px 8px rgba(0, 150, 255, 0.4),
+      0px 0px 12px rgba(0, 150, 255, 0.2)
+    `,
+  } as React.CSSProperties,
+  
+  buttonContainer: {
+    display: 'grid',
+    gap: '1rem',
+  } as React.CSSProperties,
+};
+
+// Tableau de couleurs pour chaque lettre
+const colors = ['#ff595e', '#ffca3a', '#1982c4']; // Rouge, jaune et bleu
+
+export default Home;
