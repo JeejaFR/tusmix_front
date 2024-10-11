@@ -48,7 +48,7 @@ const styles = {
   buttonHover: {
     transform: 'scale(1.05)',
     boxShadow: '0 8px 20px rgba(58, 134, 255, 0.6)',
-    backgroundColor: '#ff595e',
+    backgroundColor: '#ff914d',
   } as React.CSSProperties,
   icon: {
     fontSize: '1.8rem',

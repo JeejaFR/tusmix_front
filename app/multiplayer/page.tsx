@@ -1,161 +1,115 @@
 "use client";
 
 import Head from "next/head";
-import IconButton from "@/components/IconButton";
-import { FaHome, FaGamepad } from "react-icons/fa";
+import { FaHome, FaGamepad, FaPlay } from "react-icons/fa";
 import PlayersList from "@/components/PlayersList";
 import GameButton from "@/components/GameButton";
-import { useState, useEffect } from "react";
-import io from "socket.io-client";
+import IconButton from "@/components/IconButton";
+import InputButton from "@/components/InputButton";
+import InputText from "@/components/InputText";
+import { useEffect, useState } from "react";
 
-let socket;
+import styles from './multiplayer.module.css';
+import useSocket from '@/hooks/useSocket';
+import Link from "next/link";
 
 const Multijoueur: React.FC = () => {
   const [roomCode, setRoomCode] = useState("");
-  const [players, setPlayers] = useState<string[]>([]);
-  const [inputCode, setInputCode] = useState(""); // Code de la room saisi par l'utilisateur
-  const [inRoom, setInRoom] = useState(false); // Nouvel état pour savoir si l'utilisateur est dans une room
-  const [username, setUsername] = useState("joueur A");
+  const [inputCode, setInputCode] = useState(""); 
+  const [inRoom, setInRoom] = useState(false); 
+  const [isSelectingMode, setIsSelectingMode] = useState(true); 
+  const [isCreatorOfRoom, setIsCreatorOfRoom] = useState(false); 
+  const [username, setUsername] = useState(""); 
+
+  const { players, isPlayerKicked, createRoom, joinRoom, leaveRoom } = useSocket();
 
   useEffect(() => {
-    socketInitializer();
-  }, []);
+    if (isPlayerKicked) {
+      setInRoom(false);
+      setIsSelectingMode(true);
+      setIsCreatorOfRoom(false);
+      setInputCode("");
+      setRoomCode("");
+    }
+  }, [isPlayerKicked]);
 
-  const socketInitializer = async () => {
-    socket = io("http://localhost:4001");
-
-    socket.on("roomPlayers", (playersInRoom) => {
-      setPlayers(playersInRoom);
-    });
-  
-    socket.on("playerJoined", (username) => {
-      setPlayers((prevPlayers) => {
-        if (!prevPlayers.includes(username)) {
-          return [...prevPlayers, username];
-        }
-        return prevPlayers;
-      });
-    });
-  
-    socket.on("playerLeft", (username) => {
-      setPlayers((prevPlayers) => prevPlayers.filter((player) => player !== username));
-    });
-  };
-
-  const createRoom = () => {
-    socket.emit("createRoom", (generatedRoomCode) => {
+  const handleCreateRoom = () => {
+    createRoom(username, (generatedRoomCode: string) => {
       setRoomCode(generatedRoomCode);
       setInRoom(true);
+      setIsCreatorOfRoom(true);
+      setIsSelectingMode(false);
     });
   };
 
-  const joinRoom = (code: string, username: string) => {
-    socket.emit("joinRoom", code, username, (playersInRoom) => {
-      setPlayers(playersInRoom);
-      setRoomCode(code);
-      setInRoom(true);
+  const handleJoinRoom = () => {
+    joinRoom(inputCode, username, (success: boolean) => {
+      if (success) {
+        setRoomCode(inputCode);
+        setInRoom(true);
+        setIsCreatorOfRoom(false);
+        setIsSelectingMode(false);
+      } else {
+        alert("La room n'existe pas !");
+      }
     });
   };
 
-  const leaveRoom = () => {
-    socket.emit("leaveRoom", roomCode, () => {
+  const handleLeaveRoom = () => {
+    leaveRoom(roomCode, isCreatorOfRoom, () => {
       setRoomCode("");
       setInRoom(false);
-      setPlayers([]);
+      setIsCreatorOfRoom(false);
+      setIsSelectingMode(true);
     });
   };
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <Head>
         <title>TUSMIX</title>
         <meta name="description" content="TUSMIX" />
       </Head>
 
-      <div style={styles.title}>
-        <IconButton icon={FaHome} onClick={() => {}} />
-        <h1 style={styles.title}>TUSMIX</h1>
+      <div className={styles.title}>
+        <Link href="/">
+          <IconButton icon={FaHome} onClick={() => {}} />
+        </Link>
+        <h1 className={styles.title}>TUSMIX</h1>
       </div>
-      <PlayersList players={players} />
+      {!isSelectingMode ? (
+        <PlayersList players={players} />
+      ) :  
+        <InputText placeholder={"Choisissez un pseudo"} value={username} onInputChange={(e) => setUsername(e.target.value)}></InputText>
+      }
+      
 
       {!inRoom ? (
-        <>
-          <GameButton onClick={createRoom} icon={FaGamepad}>Créer une Room</GameButton>
-          <div style={styles.inputContainer}>
-            <input 
-              type="text" 
-              placeholder="Code de la room" 
-              value={inputCode} 
-              onChange={(e) => setInputCode(e.target.value)} 
-              style={styles.input}
-            />
-            <GameButton 
-              onClick={() => joinRoom(inputCode, "Joueur " + (players.length + 1))} 
-              icon={FaGamepad}
-            >
-              Rejoindre la Room
-            </GameButton>
+        <div className="buttonContainer">
+          <GameButton onClick={handleCreateRoom} icon={FaGamepad}>Créer une Room</GameButton>
+          <div className={styles.inputContainer}>
+            <InputButton placeholder={"Rejoindre une partie"} value={inputCode} onInputChange={(e) => setInputCode(e.target.value)} onClick={handleJoinRoom} icon={FaPlay}>Rejoindre la Room</InputButton>
           </div>
-        </>
+        </div>
       ) : (
         <>
-          <p>Code de la Room: {roomCode}</p>
-          <GameButton onClick={leaveRoom} icon={FaGamepad}>
-            Quitter la Room
-          </GameButton>
+          
+          {isCreatorOfRoom ? (
+            <div className={styles.creatorContainer}>
+              <div className={styles.codeContainer}>
+                <p className={styles.codeTitle}>Code de la Room <br/> <span className={styles.codeTexte}>{roomCode}</span></p>
+              </div>
+              <GameButton onClick={handleLeaveRoom} icon={FaGamepad}>Lancer la partie</GameButton>
+            </div>
+            ) : (
+              <></>
+            )
+          }
+          <GameButton onClick={handleLeaveRoom} icon={FaGamepad} backgroundColor="#ff4b5C">Quitter la Room</GameButton>
         </>
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "top",
-    height: "100vh",
-    background: "linear-gradient(135deg, #0d1b2a, #1b263b, #415a77)",
-    backgroundSize: "400% 400%",
-    animation: "gradient 15s ease infinite",
-    fontFamily: '"Poppins", sans-serif',
-  } as React.CSSProperties,
-  title: {
-    fontSize: "3rem",
-    fontWeight: "700",
-    marginBottom: "20px",
-    marginTop: "2rem",
-    display: "flex",
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: "#ffffff",
-    textShadow: `
-      0px 0px 4px rgba(0, 150, 255, 0.6), 
-      0px 0px 8px rgba(0, 150, 255, 0.4),
-      0px 0px 12px rgba(0, 150, 255, 0.2)
-    `,
-  } as React.CSSProperties,
-
-  buttonContainer: {
-    display: "grid",
-    gap: "1rem",
-  } as React.CSSProperties,
-
-  inputContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: "20px",
-  } as React.CSSProperties,
-  
-  input: {
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-    marginBottom: "10px",
-    fontSize: "1rem",
-  } as React.CSSProperties,
 };
 
 export default Multijoueur;

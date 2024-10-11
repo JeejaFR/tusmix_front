@@ -6,10 +6,11 @@ import { FaGamepad } from 'react-icons/fa';
 interface GameButtonProps {
   children: ReactNode;
   onClick: () => void;
+  backgroundColor?: string;
   icon?: ElementType;
 }
 
-const GameButton: React.FC<GameButtonProps> = ({ children, onClick, icon: Icon }) => {
+const GameButton: React.FC<GameButtonProps> = ({ children, onClick, backgroundColor = '#3a86ff', icon: Icon }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -19,6 +20,7 @@ const GameButton: React.FC<GameButtonProps> = ({ children, onClick, icon: Icon }
       onMouseLeave={() => setIsHovered(false)}
       style={{
         ...styles.button,
+        backgroundColor,
         ...(isHovered ? styles.buttonHover : {}),
       }}
     >
@@ -52,7 +54,7 @@ const styles = {
   buttonHover: {
     transform: 'scale(1.05)',
     boxShadow: '0 8px 20px rgba(58, 134, 255, 0.6)',
-    backgroundColor: '#ff595e',
+    backgroundColor: '#ff914d',
   } as React.CSSProperties,
   icon: {
     fontSize: '1.8rem',
