@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { cp } from "fs";
+
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
 const socket = io("http://localhost:4001");
 
 const useMultiplayerSocket = () => {
-  const [wordLength, setWordLength] = useState<number | null>(null);
+  const [wordLength, setWordLength] = useState<number | 0>(0);
   const [wordFirstLetter, setWordFirstLetter] = useState("");
-  const [guessResult, setGuessResult] = useState<string | null>(null);
+  const [guessResult, setGuessResult] = useState<string | "">("");
 
   useEffect(() => {
-    // Écoute de la longueur du mot
     socket.on("wordLength", (data: { length: number }) => {
       setWordLength(data.length);
     });
@@ -18,10 +19,9 @@ const useMultiplayerSocket = () => {
       setWordFirstLetter(data.firstLetter);
     });
 
-    // Écoute des résultats de devinette
     socket.on("guessResult", (data: { result: string }) => {
-      if(data.result === "Le mot n'existe pas dans le dictionnaire."){
-        
+      console.log("data.result", data.result);
+      if (data.result === "Le mot n'existe pas dans le dictionnaire.") {
       }
       setGuessResult(data.result);
     });
@@ -34,8 +34,9 @@ const useMultiplayerSocket = () => {
   }, []);
 
   // Fonction pour envoyer une devinette
-  const makeGuess = (roomCode : string, word: string) => {
-    socket.emit("guess", roomCode, word );
+  const makeGuess = (roomCode: string, word: string) => {
+    console.log("makeguess", word);
+    socket.emit("guess", roomCode, word);
   };
 
   return {
