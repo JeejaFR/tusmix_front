@@ -1,7 +1,23 @@
 import React from 'react';
 
+class PlayerClass {
+  username: string;
+  score: number;
+  attempts: number;
+
+  constructor(username: string, score: number, attempts: number) {
+    this.username = username;
+    this.score = score;
+    this.attempts = attempts;
+  }
+
+  displayInfo(): string {
+    return `${this.username} has a score of ${this.score}.`;
+  }
+}
+
 interface PlayersListProps {
-  players: string[];
+  players: PlayerClass[];
 }
 
 const PlayersList: React.FC<PlayersListProps> = ({ players }) => {
@@ -10,7 +26,7 @@ const PlayersList: React.FC<PlayersListProps> = ({ players }) => {
       <p style={styles.listTitle}>Liste des joueurs</p>
       {players.map((player, index) => (
         <div key={index} style={{ ...styles.playerItem, backgroundColor: colors[index % colors.length] }}>
-          <span style={styles.playerText}>{player}</span>
+          <span style={styles.playerText}>{player.username}</span>
         </div>
       ))}
     </div>

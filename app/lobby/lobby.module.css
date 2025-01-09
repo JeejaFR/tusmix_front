@@ -64,3 +64,26 @@
   .codeTexte{
     font-size: 2rem;
   }
+
+
+.scores {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 200px;
+}
+
+.scores p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.characterContainer{
+  display: flex;
+  gap: 0.2rem;
+  margin-top: 1rem;
+}
